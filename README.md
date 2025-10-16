@@ -89,6 +89,35 @@ CREATE DATABASE cgpa_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 If your application includes automatic schema creation or migrations, check the code under `src/main/java/com/cgpa/database` or `backend` for details.
 
+### Using the provided SQL schema
+
+This repository includes a ready-to-run schema file at `sql/schema.sql` that will create the `cgpa_db` database and the `students` and `subjects` tables used by the application.
+
+Run the schema from the MySQL command-line client (replace USER with your DB user):
+
+```powershell
+mysql -u USER -p < sql\schema.sql
+```
+
+Or, connect to MySQL and source the file (useful when you need to run multiple statements interactively):
+
+```sql
+-- from the mysql> prompt
+SOURCE /full/path/to/GradeHub/sql/schema.sql;
+```
+
+After creating the database and tables, update `src/main/resources/db.properties` to point to the new database (for example `db.url=jdbc:mysql://127.0.0.1:3306/cgpa_db`, and set `db.user` and `db.password`).
+
+If you prefer a dedicated DB user, create one and grant minimal privileges:
+
+```sql
+CREATE USER 'gradehub_user'@'localhost' IDENTIFIED BY 'strong_password';
+GRANT SELECT, INSERT, UPDATE, DELETE ON cgpa_db.* TO 'gradehub_user'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+Now your application should be able to connect using the credentials set in `db.properties`.
+
 ## Build and run
 
 From the repository root on Windows (PowerShell):
