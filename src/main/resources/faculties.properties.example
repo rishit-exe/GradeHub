@@ -1,0 +1,9 @@
+# Copy this file to `faculties.properties` and replace with local faculty credentials (DO NOT commit real passwords)
+# Format: usernameN=passwordN
+username1=teacher1
+password1=example_password
+
+username2=teacher2
+password2=example_password
+
+# Add additional entries as needed

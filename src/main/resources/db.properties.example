@@ -1,0 +1,5 @@
+# Copy this file to `db.properties` and fill with your local credentials (DO NOT commit real secrets)
+# Example JDBC URL uses IPv4 to avoid localhost/IPv6 issues
+db.url=jdbc:mysql://127.0.0.1:3306/cgpa_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+db.user=YOUR_DB_USER
+db.password=YOUR_DB_PASSWORD
