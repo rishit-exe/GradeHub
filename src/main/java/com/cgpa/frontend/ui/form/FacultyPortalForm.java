@@ -1,6 +1,7 @@
 package com.cgpa.frontend.ui.form;
 
 import com.cgpa.backend.service.FacultyAuthService;
+import com.cgpa.backend.service.CgpaService;
 import com.cgpa.frontend.ui.component.Form;
 import com.cgpa.frontend.ui.component.FacultyFlashcard;
 import com.cgpa.frontend.ui.dialog.FacultyLoginDialog;
@@ -19,6 +20,9 @@ import java.util.List;
 import java.util.Vector;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.HashMap;
+import java.text.DecimalFormat;
+import java.awt.geom.Arc2D;
 
 public class FacultyPortalForm extends Form {
     
@@ -273,6 +277,14 @@ public class FacultyPortalForm extends Form {
         flashcardPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 40, 40));
         
         // Top row with 2 cards
+        // Dashboard Title
+        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        titlePanel.setOpaque(false);
+        JLabel dashboardTitle = new JLabel("Faculty Dashboard");
+        dashboardTitle.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        dashboardTitle.setForeground(Color.WHITE);
+        titlePanel.add(dashboardTitle);
+        
         JPanel topRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 0));
         topRow.setOpaque(false);
         
@@ -329,9 +341,16 @@ public class FacultyPortalForm extends Form {
         bottomRow.add(resultRecordsCard);
         
         // Add rows to flashcard panel with increased spacing
-        JPanel centerPanel = new JPanel(new BorderLayout(50, 0)); // Increased spacing between rows
+        JPanel centerPanel = new JPanel(new BorderLayout(50, 20)); // Increased spacing between rows
         centerPanel.setOpaque(false);
-        centerPanel.add(topRow, BorderLayout.NORTH);
+        
+        // Create a panel for title and top row
+        JPanel topSection = new JPanel(new BorderLayout(0, 30));
+        topSection.setOpaque(false);
+        topSection.add(titlePanel, BorderLayout.NORTH);
+        topSection.add(topRow, BorderLayout.CENTER);
+        
+        centerPanel.add(topSection, BorderLayout.NORTH);
         centerPanel.add(bottomRow, BorderLayout.CENTER);
         
         flashcardPanel.add(centerPanel, BorderLayout.CENTER);
@@ -409,9 +428,20 @@ public class FacultyPortalForm extends Form {
         headerPanel.setBackground(new Color(0, 0, 0, 200)); // Darker header background
         headerPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
+        // Create a panel for the title and subtitle
+        JPanel titlePanel = new JPanel(new GridLayout(2, 1, 0, 5));
+        titlePanel.setOpaque(false);
+        
+        JLabel subtitleLabel = new JLabel("Faculty Dashboard", SwingConstants.CENTER);
+        subtitleLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        subtitleLabel.setForeground(new Color(135, 206, 235)); // Light blue color
+        
         JLabel titleLabel = new JLabel("Student Records Management", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
         titleLabel.setForeground(Color.WHITE);
+        
+        titlePanel.add(subtitleLabel);
+        titlePanel.add(titleLabel);
 
         JButton backButton = new JButton("← Back to Dashboard");
         backButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -439,7 +469,7 @@ public class FacultyPortalForm extends Form {
             repaint();
         });
 
-        headerPanel.add(titleLabel, BorderLayout.CENTER);
+        headerPanel.add(titlePanel, BorderLayout.CENTER);
         headerPanel.add(backButton, BorderLayout.WEST);
         headerPanel.add(logoutButton, BorderLayout.EAST);
 
@@ -1167,6 +1197,14 @@ public class FacultyPortalForm extends Form {
         headerPanel.setBackground(new Color(0, 0, 0, 200)); // Darker header background
         headerPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
+        // Create a panel for the title and subtitle
+        JPanel titlePanel = new JPanel(new GridLayout(2, 1, 0, 5));
+        titlePanel.setOpaque(false);
+        
+        JLabel subtitleLabel = new JLabel("Faculty Dashboard", SwingConstants.CENTER);
+        subtitleLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        subtitleLabel.setForeground(new Color(135, 206, 235)); // Light blue color
+        
         JLabel titleLabel;
         if (isFilteredByStudent && !currentFilteredStudentRoll.isEmpty()) {
             String studentName = getStudentNameByRoll(currentFilteredStudentRoll);
@@ -1176,6 +1214,9 @@ public class FacultyPortalForm extends Form {
         }
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
         titleLabel.setForeground(Color.WHITE);
+        
+        titlePanel.add(subtitleLabel);
+        titlePanel.add(titleLabel);
 
         // Back button - either to dashboard or to student list
         JButton backButton;
@@ -1214,7 +1255,7 @@ public class FacultyPortalForm extends Form {
         logoutButton.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
         logoutButton.addActionListener(e -> showLogoutConfirmation());
 
-        headerPanel.add(titleLabel, BorderLayout.CENTER);
+        headerPanel.add(titlePanel, BorderLayout.CENTER);
         headerPanel.add(backButton, BorderLayout.WEST);
         headerPanel.add(logoutButton, BorderLayout.EAST);
 
@@ -2067,6 +2108,756 @@ public class FacultyPortalForm extends Form {
     }
     
     private void showResultRecords() {
-        JOptionPane.showMessageDialog(this, "Result Records functionality coming soon!", "Info", JOptionPane.INFORMATION_MESSAGE);
+        // Create a new panel for result records with proper black background
+        JPanel resultRecordsPanel = new JPanel(new BorderLayout());
+        resultRecordsPanel.setOpaque(true); // Make it opaque to show background
+        resultRecordsPanel.setBackground(new Color(0, 0, 0, 180)); // More opaque black background
+
+        // Header panel
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setOpaque(true); // Make header opaque
+        headerPanel.setBackground(new Color(0, 0, 0, 200)); // Darker header background
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JLabel titleLabel = new JLabel("Faculty Dashboard", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        titleLabel.setForeground(Color.WHITE);
+
+        JButton backButton = new JButton("← Back to Dashboard");
+        backButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        backButton.setPreferredSize(new Dimension(150, 35));
+        backButton.setBackground(new Color(70, 130, 180));
+        backButton.setForeground(Color.WHITE);
+        backButton.setFocusPainted(false);
+        backButton.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+
+        // Logout button for sub-menu
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        logoutButton.setPreferredSize(new Dimension(100, 35));
+        logoutButton.setBackground(new Color(220, 53, 69));
+        logoutButton.setForeground(Color.WHITE);
+        logoutButton.setFocusPainted(false);
+        logoutButton.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+        logoutButton.addActionListener(e -> showLogoutConfirmation());
+
+        backButton.addActionListener(e -> showDashboardPanel());
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        buttonPanel.setOpaque(false);
+        buttonPanel.add(backButton);
+        buttonPanel.add(logoutButton);
+
+        headerPanel.add(titleLabel, BorderLayout.CENTER);
+        headerPanel.add(buttonPanel, BorderLayout.WEST);
+
+        // Main content panel with CGPA calculation functionality
+        JPanel mainContentPanel = new JPanel(new BorderLayout(20, 20));
+        mainContentPanel.setOpaque(false);
+        mainContentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // Create the CGPA calculation panel
+        JPanel cgpaCalculationPanel = createAdvancedCgpaCalculationPanel();
+        mainContentPanel.add(cgpaCalculationPanel, BorderLayout.CENTER);
+
+        resultRecordsPanel.add(headerPanel, BorderLayout.NORTH);
+        resultRecordsPanel.add(mainContentPanel, BorderLayout.CENTER);
+
+        removeAll();
+        add(resultRecordsPanel, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+    
+    // Chart data for visualization
+    private Map<Integer, Double> semesterGpa = new HashMap<>();
+    private double overallCgpa = 0.0;
+    private boolean hasData = false;
+    private AdvancedCgpaPieChartPanel lastTwoSemestersChart;
+    private AdvancedCgpaPieChartPanel individualSemestersChart;
+    private AdvancedCgpaPieChartPanel overallCgpaChart;
+    private JLabel cgpaLabel;
+    private JLabel classificationLabel;
+    
+    private JPanel createAdvancedCgpaCalculationPanel() {
+        JPanel panel = new JPanel(new BorderLayout(20, 20));
+        panel.setOpaque(false);
+        
+        // Filter Section
+        JPanel filterPanel = createAdvancedCgpaFilterPanel();
+        panel.add(filterPanel, BorderLayout.NORTH);
+        
+        // Charts Section
+        JPanel chartsPanel = createAdvancedCgpaChartsPanel();
+        panel.add(chartsPanel, BorderLayout.CENTER);
+        
+        // Results Section
+        JPanel resultsPanel = createAdvancedCgpaResultsPanel();
+        panel.add(resultsPanel, BorderLayout.SOUTH);
+        
+        return panel;
+    }
+    
+    private JPanel createCgpaCalculationPanel() {
+        JPanel panel = new JPanel(new BorderLayout(20, 20));
+        panel.setOpaque(false);
+        
+        // Filter Section
+        JPanel filterPanel = createCgpaFilterPanel();
+        panel.add(filterPanel, BorderLayout.NORTH);
+        
+        // Charts Section
+        JPanel chartsPanel = createCgpaChartsPanel();
+        panel.add(chartsPanel, BorderLayout.CENTER);
+        
+        // Results Section
+        JPanel resultsPanel = createCgpaResultsPanel();
+        panel.add(resultsPanel, BorderLayout.SOUTH);
+        
+        return panel;
+    }
+    
+    private JPanel createCgpaFilterPanel() {
+        JPanel card = new JPanel();
+        card.setLayout(new GridBagLayout());
+        card.setBackground(new Color(255, 255, 255, 220)); // Semi-transparent white
+        card.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(Color.WHITE, 1),
+            BorderFactory.createEmptyBorder(20, 20, 20, 20)
+        ));
+        card.setOpaque(false);
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.anchor = GridBagConstraints.WEST;
+        
+        // Title
+        JLabel titleLabel = new JLabel("Student Filter & CGPA Calculator");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        titleLabel.setForeground(new Color(52, 73, 94));
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 4;
+        card.add(titleLabel, gbc);
+        
+        // Section and Batch selection
+        gbc.gridwidth = 1;
+        gbc.gridx = 0; gbc.gridy = 1; card.add(new JLabel("Section:"), gbc);
+        JComboBox<String> sectionCombo = new JComboBox<>(buildSections());
+        sectionCombo.setPreferredSize(new Dimension(120, 30));
+        gbc.gridx = 1; card.add(sectionCombo, gbc);
+        gbc.gridx = 2; card.add(new JLabel("Batch:"), gbc);
+        JComboBox<Integer> batchCombo = new JComboBox<>(buildBatches());
+        batchCombo.setPreferredSize(new Dimension(100, 30));
+        gbc.gridx = 3; card.add(batchCombo, gbc);
+        
+        // Student selection
+        gbc.gridx = 0; gbc.gridy = 2; card.add(new JLabel("Student:"), gbc);
+        JComboBox<Student> studentCombo = new JComboBox<>();
+        studentCombo.setPreferredSize(new Dimension(300, 30));
+        gbc.gridx = 1; gbc.gridwidth = 2; card.add(studentCombo, gbc);
+        gbc.gridwidth = 1;
+        
+        // Calculate Button
+        JButton calcBtn = new JButton("Calculate CGPA");
+        calcBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        calcBtn.setForeground(Color.WHITE);
+        calcBtn.setBackground(new Color(231, 76, 60));
+        calcBtn.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        calcBtn.setFocusPainted(false);
+        gbc.gridx = 3; gbc.gridy = 2;
+        card.add(calcBtn, gbc);
+        
+        // Add action listeners
+        sectionCombo.addActionListener(e -> refreshStudentsForCgpa(studentCombo, sectionCombo, batchCombo));
+        batchCombo.addActionListener(e -> refreshStudentsForCgpa(studentCombo, sectionCombo, batchCombo));
+        calcBtn.addActionListener(e -> calculateCgpa(studentCombo));
+        
+        // Initialize students
+        refreshStudentsForCgpa(studentCombo, sectionCombo, batchCombo);
+        
+        return card;
+    }
+    
+    private JPanel createCgpaChartsPanel() {
+        JPanel chartsPanel = new JPanel(new GridLayout(1, 3, 20, 0));
+        chartsPanel.setOpaque(false);
+        
+        // SGPA Chart 1 (Last 2 semesters)
+        chartsPanel.add(createCgpaChartPanel("SGPA - Last 2 Semesters", true));
+        
+        // SGPA Chart 2 (Individual semesters)
+        chartsPanel.add(createCgpaChartPanel("SGPA - Individual Semesters", false));
+        
+        // Overall CGPA Chart
+        chartsPanel.add(createCgpaChartPanel("Overall CGPA", false));
+        
+        return chartsPanel;
+    }
+    
+    private JPanel createCgpaChartPanel(String title, boolean isLastTwoSemesters) {
+        JPanel chartPanel = new JPanel(new BorderLayout(10, 10));
+        chartPanel.setBackground(new Color(255, 255, 255, 220));
+        chartPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(Color.WHITE, 1),
+            BorderFactory.createEmptyBorder(15, 15, 15, 15)
+        ));
+        chartPanel.setOpaque(false);
+        
+        JLabel titleLabel = new JLabel(title);
+        titleLabel.setFont(new Font("Segoe UI Emoji", Font.BOLD, 16));
+        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        CgpaPieChartPanel pieChart = new CgpaPieChartPanel(isLastTwoSemesters);
+        pieChart.setPreferredSize(new Dimension(200, 200));
+        
+        chartPanel.add(titleLabel, BorderLayout.NORTH);
+        chartPanel.add(pieChart, BorderLayout.CENTER);
+        
+        return chartPanel;
+    }
+    
+    private JPanel createCgpaResultsPanel() {
+        JPanel results = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        results.setOpaque(false);
+        
+        JLabel cgpaTextLabel = new JLabel("CGPA:");
+        cgpaTextLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        cgpaTextLabel.setForeground(new Color(52, 73, 94));
+        
+        JLabel cgpaLabel = new JLabel("0.00");
+        cgpaLabel.setFont(new Font("Segoe UI", Font.BOLD, 36));
+        cgpaLabel.setForeground(new Color(46, 204, 113));
+        cgpaLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 20));
+        
+        JLabel classificationLabel = new JLabel("N/A");
+        classificationLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        classificationLabel.setForeground(new Color(52, 152, 219));
+        
+        results.add(cgpaTextLabel);
+        results.add(cgpaLabel);
+        results.add(classificationLabel);
+        
+        return results;
+    }
+    
+    private void refreshStudentsForCgpa(JComboBox<Student> studentCombo, JComboBox<String> sectionCombo, JComboBox<Integer> batchCombo) {
+        studentCombo.removeAllItems();
+        String selectedSection = (String) sectionCombo.getSelectedItem();
+        Integer selectedBatch = (Integer) batchCombo.getSelectedItem();
+        if (selectedSection != null && selectedBatch != null) {
+            List<Student> students = studentDao.findBySectionAndBatch(selectedSection, selectedBatch);
+            for (Student s : students) {
+                studentCombo.addItem(s);
+            }
+        }
+    }
+    
+    private void calculateCgpa(JComboBox<Student> studentCombo) {
+        Student s = (Student) studentCombo.getSelectedItem();
+        if (s == null || s.getRollNumber() == null) {
+            JOptionPane.showMessageDialog(this, "Select a student");
+            return;
+        }
+        
+        // Calculate overall CGPA
+        CgpaService cgpaService = new CgpaService(subjectDao);
+        double overallCgpa = cgpaService.computeCgpaForStudent(s.getRollNumber());
+        
+        // Calculate semester-wise GPA
+        Map<Integer, Double> semesterGpa = calculateSemesterGpa(s.getRollNumber());
+        
+        // Update display
+        DecimalFormat df = new DecimalFormat("0.00");
+        // Note: In a real implementation, you would need to update the labels in the results panel
+        // For now, we'll show the results in a dialog
+        String result = "Student: " + s.getName() + " (" + s.getRollNumber() + ")\n";
+        result += "Overall CGPA: " + df.format(overallCgpa) + "\n";
+        result += "Classification: " + classify(overallCgpa) + "\n\n";
+        result += "Semester-wise SGPA:\n";
+        for (Map.Entry<Integer, Double> entry : semesterGpa.entrySet()) {
+            result += "Semester " + entry.getKey() + ": " + df.format(entry.getValue()) + "\n";
+        }
+        
+        JOptionPane.showMessageDialog(this, result, "CGPA Calculation Results", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    private Map<Integer, Double> calculateSemesterGpa(String rollNumber) {
+        Map<Integer, Double> semesterGpa = new HashMap<>();
+        List<Subject> subjects = subjectDao.findByStudentRoll(rollNumber);
+        
+        Map<Integer, List<Subject>> semesterSubjects = new HashMap<>();
+        for (Subject subject : subjects) {
+            semesterSubjects.computeIfAbsent(subject.getSemester(), k -> new ArrayList<>()).add(subject);
+        }
+        
+        for (Map.Entry<Integer, List<Subject>> entry : semesterSubjects.entrySet()) {
+            int semester = entry.getKey();
+            List<Subject> semesterSubs = entry.getValue();
+            
+            double totalCredits = 0.0;
+            double weightedSum = 0.0;
+            
+            for (Subject sub : semesterSubs) {
+                double points = CgpaService.gradeToPoint(sub.getGrade());
+                totalCredits += sub.getCredits();
+                weightedSum += points * sub.getCredits();
+            }
+            
+            if (totalCredits > 0) {
+                double sgpa = weightedSum / totalCredits;
+                semesterGpa.put(semester, sgpa);
+            }
+        }
+        
+        return semesterGpa;
+    }
+    
+    private String classify(double cgpa) {
+        if (cgpa >= 9) return "Outstanding";
+        if (cgpa >= 8) return "Excellent";
+        if (cgpa >= 7) return "Very Good";
+        if (cgpa >= 6) return "Good";
+        if (cgpa >= 5) return "Pass";
+        return "Fail";
+    }
+    
+    private static String[] buildSections() {
+        java.util.List<String> list = new java.util.ArrayList<>();
+        for (char c = 'A'; c <= 'T'; c++) {
+            list.add(c + "1");
+        }
+        for (char c = 'A'; c <= 'T'; c++) {
+            list.add(c + "2");
+        }
+        return list.toArray(new String[0]);
+    }
+
+    private static Integer[] buildBatches() {
+        return new Integer[]{2023, 2024, 2025};
+    }
+    
+    // Advanced CGPA Filter Panel with enhanced functionality
+    private JPanel createAdvancedCgpaFilterPanel() {
+        JPanel card = new JPanel();
+        card.setLayout(new GridBagLayout());
+        card.setBackground(new Color(255, 255, 255, 220));
+        card.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(0, 0, 0, 30), 1),
+            BorderFactory.createEmptyBorder(20, 20, 20, 20)
+        ));
+        card.setOpaque(false);
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.anchor = GridBagConstraints.WEST;
+        
+        // Title
+        JLabel titleLabel = new JLabel("📊 Results Records");
+        titleLabel.setFont(new Font("Segoe UI Emoji", Font.BOLD, 20));
+        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 4;
+        gbc.anchor = GridBagConstraints.CENTER; // Center the title
+        card.add(titleLabel, gbc);
+        gbc.anchor = GridBagConstraints.WEST; // Reset anchor for other components
+        
+        // Section and Batch selection
+        gbc.gridwidth = 1;
+        gbc.gridx = 0; gbc.gridy = 1; 
+        JLabel sectionLabel = new JLabel("📚 Section:");
+        sectionLabel.setFont(new Font("Segoe UI Emoji", Font.BOLD, 14));
+        sectionLabel.setForeground(Color.WHITE);
+        card.add(sectionLabel, gbc);
+        
+        JComboBox<String> sectionCombo = new JComboBox<>(buildSections());
+        sectionCombo.setPreferredSize(new Dimension(120, 35));
+        sectionCombo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        gbc.gridx = 1; card.add(sectionCombo, gbc);
+        
+        gbc.gridx = 2; 
+        gbc.insets = new Insets(8, 5, 8, 0); // Minimal right inset for Batch label
+        JLabel batchLabel = new JLabel("📅 Batch:");
+        batchLabel.setFont(new Font("Segoe UI Emoji", Font.BOLD, 14));
+        batchLabel.setForeground(Color.WHITE);
+        card.add(batchLabel, gbc);
+        
+        gbc.insets = new Insets(8, 0, 8, 8); // Minimal left inset for batch dropdown
+        JComboBox<Integer> batchCombo = new JComboBox<>(buildBatches());
+        batchCombo.setPreferredSize(new Dimension(100, 35));
+        batchCombo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        gbc.gridx = 3; card.add(batchCombo, gbc);
+        
+        // Student selection
+        gbc.gridx = 0; gbc.gridy = 2; 
+        JLabel studentLabel = new JLabel("👤 Student:");
+        studentLabel.setFont(new Font("Segoe UI Emoji", Font.BOLD, 14));
+        studentLabel.setForeground(Color.WHITE);
+        card.add(studentLabel, gbc);
+        
+        JComboBox<Student> studentCombo = new JComboBox<>();
+        studentCombo.setPreferredSize(new Dimension(300, 35));
+        studentCombo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        gbc.gridx = 1; gbc.gridwidth = 2; card.add(studentCombo, gbc);
+        gbc.gridwidth = 1;
+        
+        // Calculate Button with enhanced styling
+        JButton calcBtn = new JButton("🧮 Calculate CGPA");
+        calcBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        calcBtn.setForeground(Color.WHITE);
+        calcBtn.setBackground(new Color(231, 76, 60));
+        calcBtn.setBorder(BorderFactory.createEmptyBorder(12, 25, 12, 25));
+        calcBtn.setFocusPainted(false);
+        calcBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        gbc.gridx = 3; gbc.gridy = 2;
+        card.add(calcBtn, gbc);
+        
+        // Add action listeners
+        sectionCombo.addActionListener(e -> refreshStudentsForCgpa(studentCombo, sectionCombo, batchCombo));
+        batchCombo.addActionListener(e -> refreshStudentsForCgpa(studentCombo, sectionCombo, batchCombo));
+        calcBtn.addActionListener(e -> calculateAdvancedCgpa(studentCombo));
+        
+        // Initialize students
+        refreshStudentsForCgpa(studentCombo, sectionCombo, batchCombo);
+        
+        return card;
+    }
+    
+    private JPanel createAdvancedCgpaChartsPanel() {
+        JPanel chartsPanel = new JPanel(new GridLayout(1, 3, 20, 0));
+        chartsPanel.setOpaque(false);
+        
+        // SGPA Chart 1 (Last 2 semesters)
+        JPanel lastTwoPanel = createAdvancedCgpaChartPanel("📊 SGPA - Last 2 Semesters", true);
+        chartsPanel.add(lastTwoPanel);
+        
+        // SGPA Chart 2 (Individual semesters)
+        JPanel individualPanel = createAdvancedCgpaChartPanel("📈 SGPA - Individual Semesters", false);
+        chartsPanel.add(individualPanel);
+        
+        // Overall CGPA Chart
+        JPanel overallPanel = createAdvancedCgpaChartPanel("🎯 Overall CGPA", false);
+        chartsPanel.add(overallPanel);
+        
+        return chartsPanel;
+    }
+    
+    private JPanel createAdvancedCgpaChartPanel(String title, boolean isLastTwoSemesters) {
+        JPanel chartPanel = new JPanel(new BorderLayout(10, 10));
+        chartPanel.setBackground(new Color(255, 255, 255, 220));
+        chartPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(Color.WHITE, 1),
+            BorderFactory.createEmptyBorder(15, 15, 15, 15)
+        ));
+        chartPanel.setOpaque(false);
+        
+        JLabel titleLabel = new JLabel(title);
+        titleLabel.setFont(new Font("Segoe UI Emoji", Font.BOLD, 16));
+        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        AdvancedCgpaPieChartPanel pieChart = new AdvancedCgpaPieChartPanel(isLastTwoSemesters);
+        pieChart.setPreferredSize(new Dimension(200, 200));
+        
+        // Store references to chart panels
+        if (title.contains("Last 2 Semesters")) {
+            lastTwoSemestersChart = pieChart;
+        } else if (title.contains("Individual Semesters")) {
+            individualSemestersChart = pieChart;
+        } else if (title.contains("Overall CGPA")) {
+            overallCgpaChart = pieChart;
+        }
+        
+        chartPanel.add(titleLabel, BorderLayout.NORTH);
+        chartPanel.add(pieChart, BorderLayout.CENTER);
+        
+        return chartPanel;
+    }
+    
+    private JPanel createAdvancedCgpaResultsPanel() {
+        JPanel results = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        results.setOpaque(false);
+        
+        JLabel cgpaTextLabel = new JLabel("🎓 CGPA:");
+        cgpaTextLabel.setFont(new Font("Segoe UI Emoji", Font.BOLD, 24));
+        cgpaTextLabel.setForeground(Color.WHITE);
+        
+        cgpaLabel = new JLabel("0.00");
+        cgpaLabel.setFont(new Font("Segoe UI", Font.BOLD, 36));
+        cgpaLabel.setForeground(new Color(46, 204, 113));
+        cgpaLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 20));
+        
+        classificationLabel = new JLabel("N/A");
+        classificationLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        classificationLabel.setForeground(new Color(52, 152, 219));
+        
+        results.add(cgpaTextLabel);
+        results.add(cgpaLabel);
+        results.add(classificationLabel);
+        
+        return results;
+    }
+    
+    private void calculateAdvancedCgpa(JComboBox<Student> studentCombo) {
+        Student s = (Student) studentCombo.getSelectedItem();
+        if (s == null || s.getRollNumber() == null) {
+            JOptionPane.showMessageDialog(this, "Please select a student to calculate CGPA", "No Student Selected", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        try {
+            // Calculate overall CGPA
+            CgpaService cgpaService = new CgpaService(subjectDao);
+            overallCgpa = cgpaService.computeCgpaForStudent(s.getRollNumber());
+            
+            // Calculate semester-wise GPA
+            semesterGpa = calculateSemesterGpa(s.getRollNumber());
+            
+            // Update the data flag
+            hasData = true;
+            
+            // Update display labels (format without unnecessary trailing zeros)
+            DecimalFormat df = new DecimalFormat("#.##");
+            cgpaLabel.setText(df.format(overallCgpa));
+            classificationLabel.setText(classify(overallCgpa));
+            
+            // Update chart panels with data
+            if (lastTwoSemestersChart != null) {
+                lastTwoSemestersChart.setData(semesterGpa, overallCgpa, hasData);
+            }
+            if (individualSemestersChart != null) {
+                individualSemestersChart.setData(semesterGpa, overallCgpa, hasData);
+            }
+            if (overallCgpaChart != null) {
+                overallCgpaChart.setData(semesterGpa, overallCgpa, hasData);
+            }
+            
+            // Refresh all charts and UI
+            if (lastTwoSemestersChart != null) lastTwoSemestersChart.repaint();
+            if (individualSemestersChart != null) individualSemestersChart.repaint();
+            if (overallCgpaChart != null) overallCgpaChart.repaint();
+            revalidate();
+            repaint();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error calculating CGPA: " + e.getMessage(), "Calculation Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    
+    // Custom Pie Chart Panel for CGPA visualization
+    private class CgpaPieChartPanel extends JPanel {
+        private final boolean isLastTwoSemesters;
+        
+        public CgpaPieChartPanel(boolean isLastTwoSemesters) {
+            this.isLastTwoSemesters = isLastTwoSemesters;
+            setOpaque(false);
+        }
+        
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            drawNoDataMessage(g);
+        }
+        
+        private void drawNoDataMessage(Graphics g) {
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            
+            g2d.setColor(new Color(150, 150, 150));
+            g2d.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            
+            String message = "Click Calculate CGPA";
+            FontMetrics fm = g2d.getFontMetrics();
+            int textWidth = fm.stringWidth(message);
+            int x = (getWidth() - textWidth) / 2;
+            int y = getHeight() / 2;
+            
+            g2d.drawString(message, x, y);
+            g2d.dispose();
+        }
+    }
+    
+    // Advanced Pie Chart Panel for CGPA visualization
+    private class AdvancedCgpaPieChartPanel extends JPanel {
+        private final boolean isLastTwoSemesters;
+        private Map<Integer, Double> semesterGpa = new HashMap<>();
+        private double overallCgpa = 0.0;
+        private boolean hasData = false;
+        
+        public AdvancedCgpaPieChartPanel(boolean isLastTwoSemesters) {
+            this.isLastTwoSemesters = isLastTwoSemesters;
+            setOpaque(false);
+        }
+        
+        public void setData(Map<Integer, Double> semesterGpa, double overallCgpa, boolean hasData) {
+            this.semesterGpa = new HashMap<>(semesterGpa);
+            this.overallCgpa = overallCgpa;
+            this.hasData = hasData;
+        }
+        
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (!hasData) {
+                drawEnhancedNoDataMessage(g);
+                return;
+            }
+            
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            
+            int centerX = getWidth() / 2;
+            int centerY = getHeight() / 2;
+            int radius = Math.min(centerX, centerY) - 20;
+            
+            if (isLastTwoSemesters) {
+                drawLastTwoSemestersChart(g2d, centerX, centerY, radius);
+            } else if (getTitle().contains("Individual")) {
+                drawIndividualSemestersChart(g2d, centerX, centerY, radius);
+            } else {
+                drawOverallCgpaChart(g2d, centerX, centerY, radius);
+            }
+            
+            g2d.dispose();
+        }
+        
+        private void drawEnhancedNoDataMessage(Graphics g) {
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            
+            g2d.setColor(Color.WHITE);
+            g2d.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
+            
+            String message = "🧮 Click Calculate CGPA";
+            FontMetrics fm = g2d.getFontMetrics();
+            int textWidth = fm.stringWidth(message);
+            int x = (getWidth() - textWidth) / 2;
+            int y = getHeight() / 2;
+            
+            g2d.drawString(message, x, y);
+            g2d.dispose();
+        }
+        
+        private void drawLastTwoSemestersChart(Graphics2D g2d, int centerX, int centerY, int radius) {
+            List<Map.Entry<Integer, Double>> sortedSemesters = semesterGpa.entrySet().stream()
+                .sorted(Map.Entry.<Integer, Double>comparingByKey().reversed())
+                .limit(2)
+                .toList();
+            
+            if (sortedSemesters.isEmpty()) return;
+            
+            double total = sortedSemesters.stream().mapToDouble(Map.Entry::getValue).sum();
+            double startAngle = 0;
+            
+            Color[] colors = {new Color(52, 152, 219), new Color(231, 76, 60)};
+            int colorIndex = 0;
+            
+            for (Map.Entry<Integer, Double> entry : sortedSemesters) {
+                double percentage = entry.getValue() / total;
+                double sweepAngle = percentage * 360;
+                
+                g2d.setColor(colors[colorIndex % colors.length]);
+                g2d.fill(new Arc2D.Double(centerX - radius, centerY - radius, 
+                    radius * 2, radius * 2, startAngle, sweepAngle, Arc2D.PIE));
+                
+                // Draw semester label
+                drawPieLabel(g2d, centerX, centerY, radius, startAngle + sweepAngle/2, 
+                    "Sem " + entry.getKey() + "\n" + String.format("%.2f", entry.getValue()));
+                
+                startAngle += sweepAngle;
+                colorIndex++;
+            }
+        }
+        
+        private void drawIndividualSemestersChart(Graphics2D g2d, int centerX, int centerY, int radius) {
+            if (semesterGpa.isEmpty()) return;
+            
+            double total = semesterGpa.values().stream().mapToDouble(Double::doubleValue).sum();
+            double startAngle = 0;
+            
+            Color[] colors = {new Color(52, 152, 219), new Color(231, 76, 60), 
+                             new Color(46, 204, 113), new Color(155, 89, 182),
+                             new Color(241, 196, 15), new Color(230, 126, 34)};
+            int colorIndex = 0;
+            
+            for (Map.Entry<Integer, Double> entry : semesterGpa.entrySet()) {
+                double percentage = entry.getValue() / total;
+                double sweepAngle = percentage * 360;
+                
+                g2d.setColor(colors[colorIndex % colors.length]);
+                g2d.fill(new Arc2D.Double(centerX - radius, centerY - radius, 
+                    radius * 2, radius * 2, startAngle, sweepAngle, Arc2D.PIE));
+                
+                // Draw semester label
+                drawPieLabel(g2d, centerX, centerY, radius, startAngle + sweepAngle/2, 
+                    "Sem " + entry.getKey() + "\n" + String.format("%.2f", entry.getValue()));
+                
+                startAngle += sweepAngle;
+                colorIndex++;
+            }
+        }
+        
+        private void drawOverallCgpaChart(Graphics2D g2d, int centerX, int centerY, int radius) {
+            if (overallCgpa == 0) return;
+            
+            // Create a donut chart showing CGPA out of 10
+            double percentage = overallCgpa / 10.0;
+            double sweepAngle = percentage * 360;
+            
+            // Background circle (gray)
+            g2d.setColor(new Color(200, 200, 200));
+            g2d.fillOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
+            
+            // CGPA arc (blue)
+            g2d.setColor(new Color(52, 152, 219));
+            g2d.fill(new Arc2D.Double(centerX - radius, centerY - radius, 
+                radius * 2, radius * 2, -90, sweepAngle, Arc2D.PIE));
+            
+            // Center text
+            g2d.setColor(new Color(52, 73, 94));
+            g2d.setFont(new Font("Segoe UI", Font.BOLD, 18));
+            String cgpaText = String.format("%.2f", overallCgpa);
+            FontMetrics fm = g2d.getFontMetrics();
+            int textWidth = fm.stringWidth(cgpaText);
+            int x = centerX - textWidth / 2;
+            int y = centerY + fm.getAscent() / 2;
+            g2d.drawString(cgpaText, x, y);
+        }
+        
+        private void drawPieLabel(Graphics2D g2d, int centerX, int centerY, int radius, 
+                                 double angle, String text) {
+            double radian = Math.toRadians(angle);
+            int labelRadius = radius * 3 / 4;
+            int x = centerX + (int) (labelRadius * Math.cos(radian));
+            int y = centerY - (int) (labelRadius * Math.sin(radian));
+            
+            g2d.setColor(Color.WHITE);
+            g2d.setFont(new Font("Segoe UI", Font.BOLD, 10));
+            
+            String[] lines = text.split("\n");
+            FontMetrics fm = g2d.getFontMetrics();
+            int lineHeight = fm.getHeight();
+            
+            for (int i = 0; i < lines.length; i++) {
+                int textWidth = fm.stringWidth(lines[i]);
+                int textX = x - textWidth / 2;
+                int textY = y - (lines.length - 1) * lineHeight / 2 + i * lineHeight;
+                g2d.drawString(lines[i], textX, textY);
+            }
+        }
+        
+        private String getTitle() {
+            Container parent = getParent();
+            if (parent instanceof JPanel) {
+                Component[] components = ((JPanel) parent).getComponents();
+                for (Component comp : components) {
+                    if (comp instanceof JLabel) {
+                        return ((JLabel) comp).getText();
+                    }
+                }
+            }
+            return "";
+        }
     }
 } 

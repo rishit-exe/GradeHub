@@ -46,7 +46,7 @@ public class HomeForm extends Form {
         welcomePanel.setLayout(new javax.swing.BoxLayout(welcomePanel, javax.swing.BoxLayout.Y_AXIS));
         welcomePanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(30, 30, 30, 30));
         
-        JLabel welcomeLabel = new JLabel("Welcome to CGPA Calculator");
+        JLabel welcomeLabel = new JLabel("Welcome to GradeHub Management System");
         welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 36));
         welcomeLabel.setForeground(Color.WHITE);
         welcomeLabel.setAlignmentX(CENTER_ALIGNMENT);

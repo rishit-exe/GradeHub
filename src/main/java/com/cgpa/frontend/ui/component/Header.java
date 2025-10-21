@@ -68,7 +68,7 @@ public class Header extends javax.swing.JPanel {
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.X_AXIS));
         
         // Add title label
-        JLabel titleLabel = new JLabel("CGPA Calculator");
+        JLabel titleLabel = new JLabel("GradeHub");
         titleLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 18));
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 0));

@@ -44,7 +44,7 @@ public class ModernLandingPanel extends JPanel {
         welcomePanel.setOpaque(false);
         welcomePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel welcomeLabel = new JLabel("Welcome to CGPA Calculator");
+        JLabel welcomeLabel = new JLabel("Welcome to GradeHub Management System");
         welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 36));
         welcomeLabel.setForeground(new Color(30, 30, 30));
         welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
