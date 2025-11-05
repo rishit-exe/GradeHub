@@ -76,11 +76,15 @@ public class StudentFormPanel extends JPanel {
         }
 
         add(buildForm(), BorderLayout.NORTH);
-        JScrollPane scroll = new JScrollPane(table);
+    JScrollPane scroll = new JScrollPane(table);
         scroll.getViewport().setBackground(Color.WHITE);
         table.setFillsViewportHeight(true);
         table.setOpaque(true);
-        add(scroll, BorderLayout.CENTER);
+    // Limit the table's preferred height so the overall form fits inside the window
+    // and doesn't force the main frame to show a large global scrollbar.
+    scroll.setPreferredSize(new java.awt.Dimension(0, 220));
+    scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+    add(scroll, BorderLayout.CENTER);
         refreshTable();
         table.getSelectionModel().addListSelectionListener(e -> onRowSelect());
         StudentEventBus.register(this::refreshTable);

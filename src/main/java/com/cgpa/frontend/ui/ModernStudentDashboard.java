@@ -230,7 +230,16 @@ public class ModernStudentDashboard extends JPanel {
     JPanel cgpaWrapper = new JPanel(new BorderLayout());
     cgpaWrapper.setOpaque(true);
     cgpaWrapper.setBackground(Color.WHITE);
-    cgpaWrapper.add(new CgpaPanel(studentDao, cgpaService, subjectDao), BorderLayout.CENTER);
+    // Wrap CGPA panel in its own scroll pane so the CGPA tab shows an internal scrollbar
+    // rather than relying on any outer/global scrollbar. This keeps charts and controls
+    // accessible even when the window is small.
+    javax.swing.JScrollPane cgpaScroll = new javax.swing.JScrollPane(new CgpaPanel(studentDao, cgpaService, subjectDao));
+    cgpaScroll.setBorder(null);
+    cgpaScroll.setOpaque(false);
+    cgpaScroll.getViewport().setOpaque(false);
+    cgpaScroll.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+    cgpaScroll.setPreferredSize(new java.awt.Dimension(0, 420));
+    cgpaWrapper.add(cgpaScroll, BorderLayout.CENTER);
 
     tabs.addTab("Student Management", studentWrapper);
     tabs.addTab("Subject Management", subjectWrapper);

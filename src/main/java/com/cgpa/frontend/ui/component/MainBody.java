@@ -26,6 +26,21 @@ public class MainBody extends javax.swing.JPanel {
         scroll.setOpaque(false);
         // scroll.setVerticalScrollBar(new ScrollBarCustom()); // We'll add this later if needed
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        // Hide the vertical scrollbar visually while keeping scrolling enabled via mouse wheel.
+        // This prevents the large, always-visible scrollbar on the right while still allowing
+        // users to scroll the content using the mouse or touchpad.
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        try {
+            javax.swing.JScrollBar vsb = scroll.getVerticalScrollBar();
+            if (vsb != null) {
+                vsb.setUnitIncrement(16);
+                // Make the visible track effectively zero-width so it doesn't show.
+                vsb.setPreferredSize(new java.awt.Dimension(0, 0));
+                vsb.setOpaque(false);
+            }
+        } catch (Exception ex) {
+            // Ignore – safe fallback if scrollbar not yet created or not supported.
+        }
     }
 
     public void displayForm(Component form) {

@@ -67,12 +67,16 @@ public class SubjectFormPanel extends JPanel {
         semesterCombo.setOpaque(true);
         semesterCombo.setBackground(Color.WHITE);
 
-        add(buildForm(), BorderLayout.NORTH);
-        JScrollPane scroll = new JScrollPane(table);
-        scroll.getViewport().setBackground(Color.WHITE);
-        table.setFillsViewportHeight(true);
-        table.setOpaque(true);
-        add(scroll, BorderLayout.CENTER);
+    add(buildForm(), BorderLayout.NORTH);
+    JScrollPane scroll = new JScrollPane(table);
+    scroll.getViewport().setBackground(Color.WHITE);
+    table.setFillsViewportHeight(true);
+    table.setOpaque(true);
+    // Limit the table height so it fits nicely under the window and doesn't rely on the
+    // outer/global scrollbar. Internal scrollbars will appear when needed.
+    scroll.setPreferredSize(new java.awt.Dimension(0, 220));
+    scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+    add(scroll, BorderLayout.CENTER);
         refreshStudents();
         // Initially show subjects for the first student if available, otherwise empty
         refreshTable();
