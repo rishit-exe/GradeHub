@@ -1,19 +1,47 @@
 package com.cgpa.frontend.ui;
 
-import com.cgpa.backend.dao.StudentDao;
-import com.cgpa.backend.dao.SubjectDao;
-import com.cgpa.backend.service.CgpaService;
-import com.cgpa.frontend.ui.components.CgpaPanel;
-import com.cgpa.backend.model.Student;
-import com.cgpa.backend.model.Subject;
-import com.cgpa.frontend.events.StudentEventBus;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.RenderingHints;
 import java.awt.geom.Arc2D;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+import com.cgpa.backend.dao.StudentDao;
+import com.cgpa.backend.dao.SubjectDao;
+import com.cgpa.backend.model.Student;
+import com.cgpa.backend.model.Subject;
+import com.cgpa.backend.service.CgpaService;
+import com.cgpa.frontend.events.StudentEventBus;
 
 public class ModernFacultyDashboard extends JPanel {
     private final JComboBox<String> sectionCombo = new JComboBox<>(buildSections());
@@ -21,9 +49,10 @@ public class ModernFacultyDashboard extends JPanel {
     private final JComboBox<Student> studentCombo = new JComboBox<>();
     private final JLabel cgpaLabel = new JLabel("0.00");
     private final JLabel classificationLabel = new JLabel("N/A");
-    private final StudentDao studentDao = new StudentDao();
-    private final CgpaService cgpaService = new CgpaService(new SubjectDao());
-    private final SubjectDao subjectDao = new SubjectDao();
+    // Use a separate profile for faculty portal so student changes in student-portal do not reflect here
+    private final StudentDao studentDao = new StudentDao("faculty");
+    private final SubjectDao subjectDao = new SubjectDao("faculty");
+    private final CgpaService cgpaService = new CgpaService(subjectDao);
     private JFrame parentFrame;
     
     // Chart data

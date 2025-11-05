@@ -1,16 +1,35 @@
 package com.cgpa.backend.dao;
 
-import com.cgpa.backend.model.Student;
-import com.cgpa.database.Database;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cgpa.backend.model.Student;
+import com.cgpa.database.Database;
+
 public class StudentDao {
+    private final String dbProfile;
+
+    /**
+     * Default constructor uses the default (classpath) `db.properties`.
+     */
+    public StudentDao() {
+        this.dbProfile = null;
+    }
+
+    /**
+     * Use a named profile (for example, "faculty") which will load `/db.{profile}.properties`.
+     */
+    public StudentDao(String dbProfile) {
+        this.dbProfile = dbProfile;
+    }
     public Student insert(Student student) {
         String sql = "INSERT INTO students(name, email, roll_number, department, section, batch) VALUES(?,?,?,?,?,?)";
-        try (Connection conn = Database.getConnection();
+        try (Connection conn = Database.getConnection(dbProfile);
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, student.getName());
             ps.setString(2, student.getEmail());
@@ -27,7 +46,7 @@ public class StudentDao {
 
     public void update(Student student) {
         String sql = "UPDATE students SET name=?, email=?, department=?, section=?, batch=? WHERE roll_number=?";
-        try (Connection conn = Database.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = Database.getConnection(dbProfile); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, student.getName());
             ps.setString(2, student.getEmail());
             ps.setString(3, student.getDepartment());
@@ -42,7 +61,7 @@ public class StudentDao {
 
     public void delete(String rollNumber) {
         String sql = "DELETE FROM students WHERE roll_number=?";
-        try (Connection conn = Database.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = Database.getConnection(dbProfile); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, rollNumber);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -52,7 +71,7 @@ public class StudentDao {
 
     public List<Student> findAll() {
         String sql = "SELECT name, email, roll_number, department, section, batch FROM students ORDER BY roll_number DESC";
-        try (Connection conn = Database.getConnection(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+        try (Connection conn = Database.getConnection(dbProfile); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
             List<Student> list = new ArrayList<>();
             while (rs.next()) {
                 list.add(map(rs));
@@ -65,7 +84,7 @@ public class StudentDao {
 
     public Student findByRoll(String roll) {
         String sql = "SELECT name, email, roll_number, department, section, batch FROM students WHERE roll_number=?";
-        try (Connection conn = Database.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = Database.getConnection(dbProfile); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, roll);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next() ? map(rs) : null;
@@ -77,7 +96,7 @@ public class StudentDao {
 
     public List<Student> findBySection(String section) {
         String sql = "SELECT name, email, roll_number, department, section, batch FROM students WHERE section=? ORDER BY roll_number";
-        try (Connection conn = Database.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = Database.getConnection(dbProfile); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, section);
             List<Student> list = new ArrayList<>();
             try (ResultSet rs = ps.executeQuery()) {
@@ -93,7 +112,7 @@ public class StudentDao {
 
     public List<Student> findBySectionAndBatch(String section, int batch) {
         String sql = "SELECT name, email, roll_number, department, section, batch FROM students WHERE section=? AND batch=? ORDER BY roll_number";
-        try (Connection conn = Database.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = Database.getConnection(dbProfile); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, section);
             ps.setInt(2, batch);
             List<Student> list = new ArrayList<>();

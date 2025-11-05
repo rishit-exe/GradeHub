@@ -1,0 +1,5 @@
+# Faculty portal separate DB (copy to db.faculty.properties and update credentials)
+# Example: use a separate schema so student additions in student portal don't show up here
+#db.url=jdbc:mysql://localhost:3306/cgpa_faculty_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+#db.user=cgpa_faculty_user
+#db.password=your_password

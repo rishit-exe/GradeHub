@@ -48,10 +48,10 @@ public class CgpaPanel extends JPanel {
     private final SubjectDao subjectDao;
     private final CgpaService cgpaService;
 
-    public CgpaPanel(StudentDao studentDao, CgpaService service) {
+    public CgpaPanel(StudentDao studentDao, CgpaService service, SubjectDao subjectDao) {
         this.studentDao = studentDao;
         this.cgpaService = service;
-        this.subjectDao = new SubjectDao();
+        this.subjectDao = subjectDao;
         setLayout(new BorderLayout(20, 20));
     setOpaque(true);
     setBackground(Color.WHITE);

@@ -63,8 +63,11 @@ public class FacultyPortalForm extends Form {
     private void initServices() {
         try {
             authService = new FacultyAuthService();
-            studentDao = new StudentDao();
-            subjectDao = new SubjectDao();
+            // Faculty portal uses its own database profile so that student additions in the
+            // regular student portal do not appear here (separate dataset)
+            // Faculty portal uses its own DB profile
+            studentDao = new StudentDao("faculty");
+            subjectDao = new SubjectDao("faculty");
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error initializing services: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

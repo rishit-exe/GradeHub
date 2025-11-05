@@ -1,16 +1,29 @@
 package com.cgpa.backend.dao;
 
-import com.cgpa.backend.model.Subject;
-import com.cgpa.database.Database;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cgpa.backend.model.Subject;
+import com.cgpa.database.Database;
+
 public class SubjectDao {
+    private final String dbProfile;
+
+    public SubjectDao() {
+        this.dbProfile = null;
+    }
+
+    public SubjectDao(String dbProfile) {
+        this.dbProfile = dbProfile;
+    }
     public Subject insert(Subject subject) {
         String sql = "INSERT INTO subjects(student_roll, subject_name, subject_code, credits, grade, semester) VALUES(?,?,?,?,?,?)";
-        try (Connection conn = Database.getConnection();
+        try (Connection conn = Database.getConnection(dbProfile);
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, subject.getStudentRoll());
             ps.setString(2, subject.getSubjectName());
@@ -30,7 +43,7 @@ public class SubjectDao {
 
     public void update(Subject subject) {
         String sql = "UPDATE subjects SET student_roll=?, subject_name=?, subject_code=?, credits=?, grade=?, semester=? WHERE id=?";
-        try (Connection conn = Database.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = Database.getConnection(dbProfile); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, subject.getStudentRoll());
             ps.setString(2, subject.getSubjectName());
             ps.setString(3, subject.getSubjectCode());
@@ -46,7 +59,7 @@ public class SubjectDao {
 
     public void delete(int id) {
         String sql = "DELETE FROM subjects WHERE id=?";
-        try (Connection conn = Database.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = Database.getConnection(dbProfile); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -56,7 +69,7 @@ public class SubjectDao {
 
     public List<Subject> findByStudentRoll(String roll) {
         String sql = "SELECT id, student_roll, subject_name, subject_code, credits, grade, semester FROM subjects WHERE student_roll=? ORDER BY id DESC";
-        try (Connection conn = Database.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = Database.getConnection(dbProfile); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, roll);
             List<Subject> list = new ArrayList<>();
             try (ResultSet rs = ps.executeQuery()) {
@@ -70,7 +83,7 @@ public class SubjectDao {
 
     public List<Subject> findAll() {
         String sql = "SELECT id, student_roll, subject_name, subject_code, credits, grade, semester FROM subjects ORDER BY id DESC";
-        try (Connection conn = Database.getConnection(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+        try (Connection conn = Database.getConnection(dbProfile); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
             List<Subject> list = new ArrayList<>();
             while (rs.next()) list.add(map(rs));
             return list;

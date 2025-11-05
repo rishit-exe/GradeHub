@@ -1,4 +1,8 @@
-# Compiled class file
+# Ignore local properties (DB credentials, local config)
+*.properties
+
+# Keep example files (they usually have different suffixes like .example)
+# e.g. db.properties.example will not be ignored# Compiled class file
 *.class
 
 # Log file

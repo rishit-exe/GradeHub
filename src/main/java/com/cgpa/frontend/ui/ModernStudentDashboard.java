@@ -230,7 +230,7 @@ public class ModernStudentDashboard extends JPanel {
     JPanel cgpaWrapper = new JPanel(new BorderLayout());
     cgpaWrapper.setOpaque(true);
     cgpaWrapper.setBackground(Color.WHITE);
-    cgpaWrapper.add(new CgpaPanel(studentDao, cgpaService), BorderLayout.CENTER);
+    cgpaWrapper.add(new CgpaPanel(studentDao, cgpaService, subjectDao), BorderLayout.CENTER);
 
     tabs.addTab("Student Management", studentWrapper);
     tabs.addTab("Subject Management", subjectWrapper);
