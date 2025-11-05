@@ -74,7 +74,10 @@ public class SubjectFormPanel extends JPanel {
         table.setOpaque(true);
         add(scroll, BorderLayout.CENTER);
         refreshStudents();
+        // Initially show subjects for the first student if available, otherwise empty
         refreshTable();
+        // When the selected student changes, only show that student's subjects in the table
+        studentCombo.addActionListener(e -> refreshTable());
         table.getSelectionModel().addListSelectionListener(e -> onRowSelect());
         StudentEventBus.register(this::refreshStudents);
     }
@@ -162,7 +165,21 @@ public class SubjectFormPanel extends JPanel {
 
     private void refreshTable() {
         tableModel.setRowCount(0);
-        for (Subject s : subjectDao.findAll()) {
+        Student sel = null;
+        if (studentCombo.getItemCount() > 0) {
+            Object o = studentCombo.getSelectedItem();
+            if (o instanceof Student) sel = (Student) o;
+        }
+
+        java.util.List<Subject> subjects;
+        if (sel != null && sel.getRollNumber() != null && !sel.getRollNumber().isEmpty()) {
+            subjects = subjectDao.findByStudentRoll(sel.getRollNumber());
+        } else {
+            // no student selected -> show nothing (or all if you prefer)
+            subjects = java.util.Collections.emptyList();
+        }
+
+        for (Subject s : subjects) {
             tableModel.addRow(new Object[]{s.getSemester(), s.getStudentRoll(), s.getSubjectName(), s.getSubjectCode(), s.getCredits(), s.getGrade()});
         }
     }

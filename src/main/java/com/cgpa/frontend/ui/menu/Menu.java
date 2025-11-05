@@ -207,7 +207,7 @@ public class Menu extends javax.swing.JPanel {
         jLabel1.setFont(new Font("sansserif", Font.BOLD, 14)); // Reverted back to original size 14
         jLabel1.setForeground(new Color(117, 117, 117));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("CGPA Calculator");
+        jLabel1.setText("GradeHub");
 
         jLabel2.setFont(new Font("sansserif", Font.BOLD, 12)); // Reverted back to original size 12
         jLabel2.setForeground(new Color(154, 154, 154));
