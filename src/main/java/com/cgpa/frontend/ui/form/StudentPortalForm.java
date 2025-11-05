@@ -1,12 +1,26 @@
 package com.cgpa.frontend.ui.form;
 
-import com.cgpa.frontend.ui.component.Form;
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import com.cgpa.frontend.ui.ModernStudentDashboard;
+import com.cgpa.frontend.ui.component.Form;
 
 public class StudentPortalForm extends Form {
 
@@ -14,6 +28,8 @@ public class StudentPortalForm extends Form {
 	private JPanel coursesPanel;
 	private List<CourseRow> courseRows;
 	private JButton addCourseButton;
+
+	private ModernStudentDashboard dashboard;
 
 	// Grade point mapping
 	private static final java.util.Map<String, Double> GRADE_POINTS = new java.util.HashMap<>();
@@ -52,10 +68,10 @@ public class StudentPortalForm extends Form {
 	private void initComponents() {
 		setLayout(new BorderLayout());
 		setOpaque(false);
-
-		JPanel cgpaPanel = createCgpaCalculatorPanel();
-		add(cgpaPanel, BorderLayout.CENTER);
+		dashboard = new ModernStudentDashboard();
+		add(dashboard, BorderLayout.CENTER);
 	}
+
 
 	private JPanel createCgpaCalculatorPanel() {
 		JPanel panel = new JPanel(new BorderLayout(30, 30));

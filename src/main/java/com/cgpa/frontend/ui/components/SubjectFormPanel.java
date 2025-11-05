@@ -1,15 +1,32 @@
 package com.cgpa.frontend.ui.components;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.ComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
 import com.cgpa.backend.dao.StudentDao;
 import com.cgpa.backend.dao.SubjectDao;
 import com.cgpa.backend.model.Student;
 import com.cgpa.backend.model.Subject;
 import com.cgpa.frontend.events.StudentEventBus;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.util.List;
 
 public class SubjectFormPanel extends JPanel {
     private final JComboBox<Student> studentCombo;
@@ -35,8 +52,27 @@ public class SubjectFormPanel extends JPanel {
         this.subjectDao = subjectDao;
         this.studentCombo = new JComboBox<>();
         setLayout(new BorderLayout(8, 8));
+    setOpaque(true);
+    setBackground(Color.WHITE);
+        // Ensure input components opaque
+        studentCombo.setOpaque(true);
+        subjectNameField.setOpaque(true);
+        subjectNameField.setBackground(Color.WHITE);
+        subjectCodeField.setOpaque(true);
+        subjectCodeField.setBackground(Color.WHITE);
+        creditsCombo.setOpaque(true);
+        creditsCombo.setBackground(Color.WHITE);
+        gradeCombo.setOpaque(true);
+        gradeCombo.setBackground(Color.WHITE);
+        semesterCombo.setOpaque(true);
+        semesterCombo.setBackground(Color.WHITE);
+
         add(buildForm(), BorderLayout.NORTH);
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        JScrollPane scroll = new JScrollPane(table);
+        scroll.getViewport().setBackground(Color.WHITE);
+        table.setFillsViewportHeight(true);
+        table.setOpaque(true);
+        add(scroll, BorderLayout.CENTER);
         refreshStudents();
         refreshTable();
         table.getSelectionModel().addListSelectionListener(e -> onRowSelect());
@@ -45,12 +81,12 @@ public class SubjectFormPanel extends JPanel {
 
     private JPanel buildForm() {
         JPanel form = new JPanel(new GridBagLayout());
-        form.setBackground(new Color(255, 255, 255, 220));
+    form.setBackground(Color.WHITE);
         form.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(new Color(0, 0, 0, 30), 1),
             BorderFactory.createEmptyBorder(15, 15, 15, 15)
         ));
-        form.setOpaque(false);
+    form.setOpaque(true);
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(4,4,4,4);
@@ -66,7 +102,9 @@ public class SubjectFormPanel extends JPanel {
         addRow(form, gbc, r++, "Grade:", gradeCombo);
         addRow(form, gbc, r++, "Semester:", semesterCombo);
 
-        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    buttons.setOpaque(true);
+    buttons.setBackground(Color.WHITE);
         JButton addBtn = new JButton("Add Subject");
         JButton updateBtn = new JButton("Update Subject");
         JButton deleteBtn = new JButton("Delete Subject");
@@ -108,6 +146,8 @@ public class SubjectFormPanel extends JPanel {
         JLabel labelComponent = new JLabel(label);
         labelComponent.setForeground(new Color(52, 73, 94));
         labelComponent.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        labelComponent.setOpaque(true);
+        labelComponent.setBackground(Color.WHITE);
         panel.add(labelComponent, gbc);
         gbc.gridx = 1; gbc.weightx = 1.0;
         panel.add(field, gbc);

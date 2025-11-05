@@ -1,18 +1,38 @@
 package com.cgpa.frontend.ui.components;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridLayout;
+import java.awt.RenderingHints;
+import java.awt.geom.Arc2D;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 import com.cgpa.backend.dao.StudentDao;
 import com.cgpa.backend.dao.SubjectDao;
 import com.cgpa.backend.model.Student;
 import com.cgpa.backend.model.Subject;
 import com.cgpa.backend.service.CgpaService;
 import com.cgpa.frontend.events.StudentEventBus;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.Arc2D;
-import java.text.DecimalFormat;
-import java.util.*;
-import java.util.List;
 
 public class CgpaPanel extends JPanel {
     private final JComboBox<Student> studentCombo = new JComboBox<>();
@@ -33,8 +53,8 @@ public class CgpaPanel extends JPanel {
         this.cgpaService = service;
         this.subjectDao = new SubjectDao();
         setLayout(new BorderLayout(20, 20));
-        setBackground(new Color(255, 255, 255, 0));
-        setOpaque(false);
+    setOpaque(true);
+    setBackground(Color.WHITE);
         
         add(buildHeader(), BorderLayout.NORTH);
         add(buildChartsPanel(), BorderLayout.CENTER);
@@ -45,14 +65,17 @@ public class CgpaPanel extends JPanel {
 
     private JPanel buildHeader() {
         JPanel header = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        header.setOpaque(false);
+    header.setOpaque(true);
+    header.setBackground(Color.WHITE);
         
         JLabel studentLabel = new JLabel("Student:");
         studentLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
         studentLabel.setForeground(new Color(52, 73, 94));
         
-        studentCombo.setPreferredSize(new Dimension(300, 35));
-        studentCombo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+    studentCombo.setPreferredSize(new Dimension(300, 35));
+    studentCombo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+    studentCombo.setOpaque(true);
+    studentCombo.setBackground(Color.WHITE);
         
         JButton calcBtn = new JButton("Calculate CGPA");
         calcBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -71,7 +94,8 @@ public class CgpaPanel extends JPanel {
 
     private JPanel buildChartsPanel() {
         JPanel chartsPanel = new JPanel(new GridLayout(1, 3, 20, 0));
-        chartsPanel.setOpaque(false);
+    chartsPanel.setOpaque(true);
+    chartsPanel.setBackground(Color.WHITE);
         
         // SGPA Chart 1 (Last 2 semesters)
         chartsPanel.add(createChartPanel("SGPA - Last 2 Semesters", true));
@@ -92,7 +116,8 @@ public class CgpaPanel extends JPanel {
             BorderFactory.createLineBorder(new Color(0, 0, 0, 30), 1),
             BorderFactory.createEmptyBorder(15, 15, 15, 15)
         ));
-        chartPanel.setOpaque(false);
+    chartPanel.setOpaque(true);
+    chartPanel.setBackground(Color.WHITE);
         
         JLabel titleLabel = new JLabel(title);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
@@ -110,7 +135,8 @@ public class CgpaPanel extends JPanel {
 
     private JPanel buildResults() {
         JPanel results = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        results.setOpaque(false);
+    results.setOpaque(true);
+    results.setBackground(Color.WHITE);
         
         JLabel cgpaTextLabel = new JLabel("CGPA:");
         cgpaTextLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
@@ -206,7 +232,8 @@ public class CgpaPanel extends JPanel {
         
         public PieChartPanel(boolean isLastTwoSemesters) {
             this.isLastTwoSemesters = isLastTwoSemesters;
-            setOpaque(false);
+            setOpaque(true);
+            setBackground(new Color(255,255,255,220));
         }
         
         @Override

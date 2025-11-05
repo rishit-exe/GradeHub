@@ -1,15 +1,45 @@
+
 package com.cgpa.frontend.ui;
+
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 import com.cgpa.backend.dao.StudentDao;
 import com.cgpa.backend.dao.SubjectDao;
 import com.cgpa.backend.service.CgpaService;
-import com.cgpa.frontend.ui.components.*;
-import javax.swing.*;
-import java.awt.*;
+import com.cgpa.frontend.ui.components.CgpaPanel;
+import com.cgpa.frontend.ui.components.StudentFormPanel;
+import com.cgpa.frontend.ui.components.SubjectFormPanel;
 
 public class ModernStudentDashboard extends JPanel {
     private JFrame parentFrame;
-    private JTabbedPane tabs;
+    JTabbedPane tabs;
+    /**
+     * Set the selected tab by index (0: Student Management, 1: Subject Management, 2: CGPA Calculator)
+     */
+    public void setSelectedTab(int index) {
+        if (tabs != null && index >= 0 && index < tabs.getTabCount()) {
+            tabs.setSelectedIndex(index);
+        }
+    }
     
     // Enhanced colors for modern theme
     private static final Color CARD_BG = Color.WHITE;
@@ -21,9 +51,10 @@ public class ModernStudentDashboard extends JPanel {
     
     public ModernStudentDashboard() {
         setLayout(new BorderLayout());
-        setBackground(new Color(255, 255, 255, 0)); // Transparent
+        // Use an opaque white background for the dashboard so tab content doesn't show through
+        setBackground(Color.WHITE);
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        setOpaque(false);
+        setOpaque(true);
         
         createHeader();
         createTabs();
@@ -33,18 +64,20 @@ public class ModernStudentDashboard extends JPanel {
         JPanel headerPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
+                // Clear background first
+                super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g.create();
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 
                 // Create rounded rectangle background
                 int arc = 20;
-                g2d.setColor(new Color(255, 255, 255, 220));
+                g2d.setColor(Color.WHITE);
                 g2d.fillRoundRect(0, 0, getWidth(), getHeight(), arc, arc);
                 
-                // Add gradient overlay
+                // Add subtle gradient overlay (very light)
                 GradientPaint gradient = new GradientPaint(
-                    0, 0, new Color(52, 152, 219, 30),
-                    getWidth(), 0, new Color(41, 128, 185, 30)
+                    0, 0, new Color(52, 152, 219, 20),
+                    getWidth(), 0, new Color(41, 128, 185, 20)
                 );
                 g2d.setPaint(gradient);
                 g2d.fillRoundRect(0, 0, getWidth(), getHeight(), arc, arc);
@@ -55,12 +88,12 @@ public class ModernStudentDashboard extends JPanel {
                 g2d.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, arc, arc);
                 
                 g2d.dispose();
-                super.paintComponent(g);
             }
         };
         
         headerPanel.setLayout(new BorderLayout(20, 20));
-        headerPanel.setOpaque(false);
+    headerPanel.setOpaque(true);
+    headerPanel.setBackground(Color.WHITE);
         headerPanel.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
         headerPanel.setPreferredSize(new Dimension(0, 120));
         
@@ -175,19 +208,64 @@ public class ModernStudentDashboard extends JPanel {
     private void createTabs() {
         tabs = new JTabbedPane();
         tabs.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        tabs.setBackground(new Color(255, 255, 255, 200)); // Semi-transparent white
-        tabs.setOpaque(false);
+    tabs.setBackground(Color.WHITE);
+    tabs.setOpaque(true);
         
         StudentDao studentDao = new StudentDao();
         SubjectDao subjectDao = new SubjectDao();
         CgpaService cgpaService = new CgpaService(subjectDao);
 
-        // Create modern tab panels
-        tabs.addTab("Student Management", new StudentFormPanel(studentDao));
-        tabs.addTab("Subject Management", new SubjectFormPanel(studentDao, subjectDao));
-        tabs.addTab("CGPA Calculator", new CgpaPanel(studentDao, cgpaService));
+    // Create modern tab panels and wrap each in an opaque white panel to ensure
+    // the selected tab fully covers underlying content (prevents bleed-through)
+    JPanel studentWrapper = new JPanel(new BorderLayout());
+    studentWrapper.setOpaque(true);
+    studentWrapper.setBackground(Color.WHITE);
+    studentWrapper.add(new StudentFormPanel(studentDao), BorderLayout.CENTER);
+
+    JPanel subjectWrapper = new JPanel(new BorderLayout());
+    subjectWrapper.setOpaque(true);
+    subjectWrapper.setBackground(Color.WHITE);
+    subjectWrapper.add(new SubjectFormPanel(studentDao, subjectDao), BorderLayout.CENTER);
+
+    JPanel cgpaWrapper = new JPanel(new BorderLayout());
+    cgpaWrapper.setOpaque(true);
+    cgpaWrapper.setBackground(Color.WHITE);
+    cgpaWrapper.add(new CgpaPanel(studentDao, cgpaService), BorderLayout.CENTER);
+
+    tabs.addTab("Student Management", studentWrapper);
+    tabs.addTab("Subject Management", subjectWrapper);
+    tabs.addTab("CGPA Calculator", cgpaWrapper);
+        // Ensure only the selected tab's component is visible to avoid any painting or
+        // hover side-effects from non-selected tabs (prevents buttons from appearing
+        // when hovering their screen area while a different tab is active).
+        tabs.addChangeListener(e -> {
+            int sel = tabs.getSelectedIndex();
+            for (int i = 0; i < tabs.getTabCount(); i++) {
+                Component comp = tabs.getComponentAt(i);
+                if (comp != null) {
+                    comp.setVisible(i == sel);
+                    // force layout/paint on the selected component
+                    if (i == sel) {
+                        comp.revalidate();
+                        comp.repaint();
+                    }
+                }
+            }
+        });
         
         add(tabs, BorderLayout.CENTER);
+        // Ensure double buffering and force a clean repaint once shown to avoid stale artifacts
+        tabs.setDoubleBuffered(true);
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            // Ensure only the current tab is visible at startup
+            int sel = tabs.getSelectedIndex();
+            for (int i = 0; i < tabs.getTabCount(); i++) {
+                Component comp = tabs.getComponentAt(i);
+                if (comp != null) comp.setVisible(i == sel);
+            }
+            tabs.revalidate();
+            tabs.repaint();
+        });
     }
     
     public void setParentFrame(JFrame frame) {

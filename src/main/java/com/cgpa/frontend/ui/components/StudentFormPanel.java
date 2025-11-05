@@ -1,13 +1,31 @@
 package com.cgpa.frontend.ui.components;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.table.DefaultTableModel;
+
 import com.cgpa.backend.dao.StudentDao;
 import com.cgpa.backend.model.Student;
 import com.cgpa.frontend.events.StudentEventBus;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.util.List;
 
 public class StudentFormPanel extends JPanel {
     private final JTextField nameField = new JTextField();
@@ -29,8 +47,40 @@ public class StudentFormPanel extends JPanel {
     public StudentFormPanel(StudentDao studentDao) {
         this.studentDao = studentDao;
         setLayout(new BorderLayout(8, 8));
+    setOpaque(true);
+    setBackground(Color.WHITE);
+        // Ensure input components paint their own backgrounds to avoid visual ghosting
+        nameField.setOpaque(true);
+        nameField.setBackground(Color.WHITE);
+        nameField.setBorder(BorderFactory.createLineBorder(new Color(180,180,180)));
+        emailField.setOpaque(true);
+        emailField.setBackground(Color.WHITE);
+        emailField.setBorder(BorderFactory.createLineBorder(new Color(180,180,180)));
+        rollField.setOpaque(true);
+        rollField.setBackground(Color.WHITE);
+        rollField.setBorder(BorderFactory.createLineBorder(new Color(180,180,180)));
+        departmentCombo.setOpaque(true);
+        departmentCombo.setBackground(Color.WHITE);
+        departmentCombo.setBorder(BorderFactory.createLineBorder(new Color(180,180,180)));
+        sectionCombo.setOpaque(true);
+        sectionCombo.setBackground(Color.WHITE);
+        sectionCombo.setBorder(BorderFactory.createLineBorder(new Color(180,180,180)));
+        batchSpinner.setOpaque(true);
+        // Ensure spinner editor field has consistent border/background
+        JComponent editor = batchSpinner.getEditor();
+        if (editor instanceof JSpinner.DefaultEditor) {
+            JTextField tf = ((JSpinner.DefaultEditor) editor).getTextField();
+            tf.setOpaque(true);
+            tf.setBackground(Color.WHITE);
+            tf.setBorder(BorderFactory.createLineBorder(new Color(180,180,180)));
+        }
+
         add(buildForm(), BorderLayout.NORTH);
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        JScrollPane scroll = new JScrollPane(table);
+        scroll.getViewport().setBackground(Color.WHITE);
+        table.setFillsViewportHeight(true);
+        table.setOpaque(true);
+        add(scroll, BorderLayout.CENTER);
         refreshTable();
         table.getSelectionModel().addListSelectionListener(e -> onRowSelect());
         StudentEventBus.register(this::refreshTable);
@@ -38,12 +88,12 @@ public class StudentFormPanel extends JPanel {
 
     private JPanel buildForm() {
         JPanel form = new JPanel(new GridBagLayout());
-        form.setBackground(new Color(255, 255, 255, 220));
+    form.setBackground(Color.WHITE);
         form.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(new Color(0, 0, 0, 30), 1),
             BorderFactory.createEmptyBorder(15, 15, 15, 15)
         ));
-        form.setOpaque(false);
+    form.setOpaque(true);
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(4, 4, 4, 4);
@@ -59,7 +109,9 @@ public class StudentFormPanel extends JPanel {
         addRow(form, gbc, r++, "Section:", sectionCombo);
         addRow(form, gbc, r++, "Batch:", batchSpinner);
 
-        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    buttons.setOpaque(true);
+    buttons.setBackground(Color.WHITE);
         JButton addBtn = new JButton("Add Student");
         JButton updateBtn = new JButton("Update Student");
         JButton deleteBtn = new JButton("Delete Student");
@@ -68,18 +120,26 @@ public class StudentFormPanel extends JPanel {
         addBtn.setBackground(new Color(52, 152, 219));
         addBtn.setForeground(Color.WHITE);
         addBtn.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+    addBtn.setOpaque(true);
+    addBtn.setContentAreaFilled(true);
         
         updateBtn.setBackground(new Color(46, 204, 113));
         updateBtn.setForeground(Color.WHITE);
         updateBtn.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+    updateBtn.setOpaque(true);
+    updateBtn.setContentAreaFilled(true);
         
         deleteBtn.setBackground(new Color(231, 76, 60));
         deleteBtn.setForeground(Color.WHITE);
         deleteBtn.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+    deleteBtn.setOpaque(true);
+    deleteBtn.setContentAreaFilled(true);
         
         clearBtn.setBackground(new Color(149, 165, 166));
         clearBtn.setForeground(Color.WHITE);
         clearBtn.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+    clearBtn.setOpaque(true);
+    clearBtn.setContentAreaFilled(true);
 
         addBtn.addActionListener(e -> addStudent());
         updateBtn.addActionListener(e -> updateStudent());
@@ -101,6 +161,9 @@ public class StudentFormPanel extends JPanel {
         JLabel labelComponent = new JLabel(label);
         labelComponent.setForeground(new Color(52, 73, 94));
         labelComponent.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        // Ensure label paints its own background to avoid being obscured by overlapping components
+        labelComponent.setOpaque(true);
+        labelComponent.setBackground(Color.WHITE);
         panel.add(labelComponent, gbc);
         gbc.gridx = 1; gbc.weightx = 1.0;
         panel.add(field, gbc);
