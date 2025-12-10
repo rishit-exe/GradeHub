@@ -17,8 +17,12 @@ public class SettingForm extends Form {
         ThemeColorChange.getInstance().addEventColorChange(new EventColorChange() {
             @Override
             public void colorChange(Color color) {
-                // Don't override the switch button background - let it use its own colors
-                imageBackgroundOption1.getSwitch().setBackground(color);
+                // Sync all toggle controls in the settings panel with the selected theme color
+                // so switches reflect the current palette (both the main dark-mode toggle
+                // and the background-image toggle).
+                switchButton.setThemeColor(color);
+                // ImageBackgroundOption exposes a helper to update its label and switch
+                imageBackgroundOption1.changeColorLabel(color);
             }
         });
         if (ThemeColorChange.getInstance().getMode() == ThemeColorChange.Mode.LIGHT) {
@@ -81,7 +85,8 @@ public class SettingForm extends Form {
         lbDark.setForeground(new java.awt.Color(230, 230, 230));
         lbDark.setText("Dark mode");
 
-        jLabel2.setForeground(new java.awt.Color(128, 128, 128));
+    // Make the descriptive subtext more readable on dark backgrounds
+    jLabel2.setForeground(Color.WHITE);
         jLabel2.setText("Use darker color paletter for system backgrounds and compatible apps");
 
         jPanel2.setOpaque(false);
@@ -137,7 +142,8 @@ public class SettingForm extends Form {
         lbColor.setForeground(new java.awt.Color(230, 230, 230));
         lbColor.setText("Theme Color");
 
-        jLabel4.setForeground(new java.awt.Color(128, 128, 128));
+    // Make descriptive subtext white for better contrast
+    jLabel4.setForeground(Color.WHITE);
         jLabel4.setText("Select color to set theme system");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);

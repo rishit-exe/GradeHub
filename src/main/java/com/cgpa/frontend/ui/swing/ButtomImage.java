@@ -1,6 +1,6 @@
 package com.cgpa.frontend.ui.swing;
 
-import java.awt.Color;
+import com.cgpa.frontend.ui.theme.SystemTheme;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -22,7 +22,8 @@ public class ButtomImage extends JButton {
             @Override
             public void mouseEntered(MouseEvent me) {
                 if (!selected) {
-                    setBorder(javax.swing.BorderFactory.createLineBorder(Color.WHITE, 2));
+                    // Use the system theme main color for hover border so previews match the palette
+                    setBorder(javax.swing.BorderFactory.createLineBorder(SystemTheme.mainColor, 2));
                 }
             }
 
@@ -42,7 +43,7 @@ public class ButtomImage extends JButton {
     public void setSelected(boolean selected) {
         this.selected = selected;
         if (selected) {
-            setBorder(javax.swing.BorderFactory.createLineBorder(Color.WHITE, 2));
+            setBorder(javax.swing.BorderFactory.createLineBorder(SystemTheme.mainColor, 2));
         } else {
             setBorder(null);
         }

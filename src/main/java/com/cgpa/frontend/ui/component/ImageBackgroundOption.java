@@ -1,7 +1,5 @@
 package com.cgpa.frontend.ui.component;
 
-import com.cgpa.frontend.ui.swing.EventSwitchSelected;
-import com.cgpa.frontend.ui.swing.SwitchButton;
 import com.cgpa.frontend.ui.theme.ThemeColorChange;
 import java.awt.Color;
 import java.awt.Component;
@@ -9,7 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import net.miginfocom.swing.MigLayout;
-import org.jdesktop.animation.timing.TimingTargetAdapter;
+ 
 
 public class ImageBackgroundOption extends javax.swing.JPanel {
 
@@ -17,42 +15,23 @@ public class ImageBackgroundOption extends javax.swing.JPanel {
 
     public ImageBackgroundOption() {
         initComponents();
-        layout = new MigLayout("fill, wrap 1, inset 0", "[fill]", "[]0[0!]");
+        layout = new MigLayout("fill, wrap 1, inset 0", "[fill]", "[]0[68!]");
         setLayout(layout);
-        switchButton.addEventSelected(new com.cgpa.frontend.ui.swing.SwitchButton.SwitchButtonEvent() {
-            @Override
-            public void onSelected(boolean selected) {
-                if (selected) {
-                    // When enabled, automatically select the first image
-                    ThemeColorChange.getInstance().changeBackgroundImage("bg_1.jpg");
-                    // Set the first image as selected
-                    setSelected("bg_1.jpg");
-                    // Save to properties later
-                } else {
-                    ThemeColorChange.getInstance().changeBackgroundImage("");
-                    // Clear selection when disabled
-                    clearSelected();
-                }
-                // Simple layout update without animation
-                if (selected) {
-                    layout.setRowConstraints("[]0[68!]");
-                } else {
-                    layout.setRowConstraints("[]0[0!]");
-                }
-                revalidate();
-            }
-        });
+        // Previews are always shown; no enable/disable switch.
         addEvent();
-    }
-
-    public SwitchButton getSwitch() {
-        return switchButton;
     }
 
     public void changeColorLabel(Color color) {
         lbBack.setForeground(color);
-        // Also sync the toggle button color with the theme color
-        switchButton.setThemeColor(color);
+        // Update any selected preview border to the new theme color so previews match
+        for (Component com : panel.getComponents()) {
+            if (com instanceof javax.swing.JButton) {
+                javax.swing.JButton btn = (javax.swing.JButton) com;
+                if (btn.isSelected()) {
+                    btn.setBorder(javax.swing.BorderFactory.createLineBorder(color, 2));
+                }
+            }
+        }
     }
 
     private void addEvent() {
@@ -80,16 +59,10 @@ public class ImageBackgroundOption extends javax.swing.JPanel {
     }
 
     public void init(String imageSelected) {
+        // Always expand previews and select the provided image (if any).
         setSelected(imageSelected);
-        if (!imageSelected.equals("")) {
-            switchButton.setSelected(true);
-            layout.setRowConstraints("[]0[68!]");
-            revalidate();
-        } else {
-            switchButton.setSelected(false);
-            layout.setRowConstraints("[]0[0!]");
-            revalidate();
-        }
+        layout.setRowConstraints("[]0[68!]");
+        revalidate();
     }
 
     public void setSelected(String imageSelected) {
@@ -104,12 +77,10 @@ public class ImageBackgroundOption extends javax.swing.JPanel {
     }
 
     private void initComponents() {
-        jPanel1 = new javax.swing.JPanel();
-        lbBack = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
-        switchButton = new com.cgpa.frontend.ui.swing.SwitchButton();
-        panel = new javax.swing.JPanel();
+    jPanel1 = new javax.swing.JPanel();
+    lbBack = new javax.swing.JLabel();
+    jLabel2 = new javax.swing.JLabel();
+    panel = new javax.swing.JPanel();
         buttomImage1 = new com.cgpa.frontend.ui.swing.ButtomImage();
         buttomImage2 = new com.cgpa.frontend.ui.swing.ButtomImage();
         buttomImage3 = new com.cgpa.frontend.ui.swing.ButtomImage();
@@ -124,27 +95,11 @@ public class ImageBackgroundOption extends javax.swing.JPanel {
         lbBack.setForeground(new java.awt.Color(230, 230, 230));
         lbBack.setText("Background Image");
 
-        jLabel2.setForeground(new java.awt.Color(128, 128, 128));
-        jLabel2.setText("Use simple image as background of system");
+    // Make descriptive subtext white so it reads on dark backgrounds
+    jLabel2.setForeground(Color.WHITE);
+    jLabel2.setText("Use simple image as background of system");
 
-        jPanel2.setOpaque(false);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(switchButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(switchButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12))
-        );
+        // No enable/disable switch panel: previews are always visible.
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -155,9 +110,7 @@ public class ImageBackgroundOption extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbBack)
                     .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -167,8 +120,7 @@ public class ImageBackgroundOption extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(lbBack)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel2)))
                 .addContainerGap())
         );
 
@@ -215,16 +167,16 @@ public class ImageBackgroundOption extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+    javax.swing.GroupLayout groupLayout = new javax.swing.GroupLayout(this);
+        this.setLayout(groupLayout);
+        groupLayout.setHorizontalGroup(
+            groupLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        groupLayout.setVerticalGroup(
+            groupLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(groupLayout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -238,8 +190,7 @@ public class ImageBackgroundOption extends javax.swing.JPanel {
     private com.cgpa.frontend.ui.swing.ButtomImage buttomImage5;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lbBack;
     private javax.swing.JPanel panel;
-    private com.cgpa.frontend.ui.swing.SwitchButton switchButton;
+    
 } 

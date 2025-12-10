@@ -90,8 +90,9 @@ public class Menu extends javax.swing.JPanel {
             // Use text instead of icon if image is not found
             m.setText(icon + "  " + menuName);
         }
-        m.setFont(m.getFont().deriveFont(Font.BOLD, 12));
-        m.setForeground(new Color(127, 127, 127));
+    m.setFont(m.getFont().deriveFont(Font.BOLD, 12));
+    // Default nav text color: white for better contrast with the header
+    m.setForeground(Color.WHITE);
         m.setHorizontalAlignment(JButton.LEFT);
         m.setText("  " + menuName);
         m.addActionListener(new ActionListener() {
@@ -138,8 +139,9 @@ public class Menu extends javax.swing.JPanel {
         for (Component com : menu.getComponents()) {
             if (com instanceof MenuButton) {
                 MenuButton c = (MenuButton) com;
-                c.setForeground(new Color(127, 127, 127));
-                c.setEffectColor(new Color(173, 173, 173));
+                // Keep nav items white when not selected for a consistent look
+                c.setForeground(Color.WHITE);
+                c.setEffectColor(SystemTheme.mainColor);
                 c.setBackground(new Color(0, 0, 0, 0)); // Transparent background
                 if (!c.getIcoName().contains("_s")) {
                     try {

@@ -2,13 +2,12 @@ package com.cgpa.frontend.ui.component;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.BorderLayout;
-import javax.swing.JScrollPane;
+import java.awt.Font;
+
+import javax.swing.GroupLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
-import java.awt.Font;
+import javax.swing.JScrollPane;
 
 public class MainBody extends javax.swing.JPanel {
 
